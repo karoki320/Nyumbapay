@@ -1,11 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import { Flash } from "@/components/flash";
+import { SITE } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE.url),
   title: { default: "NyumbaPay", template: "%s · NyumbaPay" },
-  description: "Rent collection and M-Pesa reconciliation for Kenyan landlords.",
+  description: SITE.description,
+  openGraph: { siteName: "NyumbaPay", locale: "en_KE", type: "website" },
+  twitter: { card: "summary_large_image" },
   applicationName: "NyumbaPay",
   appleWebApp: { capable: true, title: "NyumbaPay", statusBarStyle: "default" },
 };

@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC = ["/login", "/auth", "/pay", "/api/hooks", "/api/cron"];
+const PUBLIC = ["/login", "/auth", "/pay", "/api/hooks", "/api/cron", "/blog", "/sitemap.xml", "/robots.txt", "/opengraph-image"];
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -21,7 +21,7 @@ export async function proxy(request: NextRequest) {
   );
 
   const path = request.nextUrl.pathname;
-  if (PUBLIC.some((p) => path.startsWith(p))) return response;
+  if (path === "/" || PUBLIC.some((p) => path.startsWith(p))) return response;
 
   const { data } = await supabase.auth.getUser();   // refreshes the session cookie
   if (!data.user) {

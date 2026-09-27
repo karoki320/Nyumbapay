@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Logo } from "@/components/logo";
+import { createClient } from "@/lib/supabase/server";
 import { Submit } from "@/components/submit";
 import { magicLink, signIn, signUp } from "./actions";
 
@@ -7,9 +9,11 @@ export const metadata = { title: "Sign in" };
 
 export default async function Login({ searchParams }: { searchParams: Promise<{ mode?: string }> }) {
   const signup = (await searchParams).mode === "signup";
+  const { data: { user } } = await (await createClient()).auth.getUser();
+  if (user) redirect("/dashboard");
   return (
     <div className="auth">
-      <Logo />
+      <Link href="/" aria-label="NyumbaPay home"><Logo /></Link>
       <h2 style={{ fontSize: 22 }}>{signup ? "Create your NyumbaPay account" : "Sign in to NyumbaPay"}</h2>
       <p className="sub" style={{ marginTop: 4 }}>Rent collection that reconciles itself.</p>
 
