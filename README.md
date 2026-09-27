@@ -1,4 +1,4 @@
-# NyumbaOS
+# NyumbaPay
 
 Rent collection and M-Pesa reconciliation for Kenyan landlords and agents. Multi-landlord SaaS:
 each account gets its own account prefix (e.g. `KAR`), so tenants pay with `KAR-A1` and payments

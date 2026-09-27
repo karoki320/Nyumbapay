@@ -1,0 +1,79 @@
+import Link from "next/link";
+import { getContext } from "@/lib/context";
+import { ksh, periodLabel, periodOf, when } from "@/lib/money";
+import type { LeaseBalance, Payment } from "@/lib/types";
+
+export const metadata = { title: "Home" };
+
+export default async function Dashboard() {
+  const { supabase, org } = await getContext();
+  const period = periodOf();
+
+  const [{ data: inv }, { data: leases }, { data: pays }, { count: unitCount }] = await Promise.all([
+    supabase.from("invoices").select("amount, amount_paid").eq("org_id", org.id).eq("period", period).neq("status", "void"),
+    supabase.from("lease_balances").select("*").eq("org_id", org.id),
+    supabase.from("payments").select("*").eq("org_id", org.id).neq("status", "reversed")
+      .order("received_at", { ascending: false }).limit(6),
+    supabase.from("units").select("id", { count: "exact", head: true }).eq("org_id", org.id),
+  ]);
+
+  const expected = (inv ?? []).reduce((n, i) => n + Number(i.amount), 0);
+  const collected = (inv ?? []).reduce((n, i) => n + Number(i.amount_paid), 0);
+  const pct = expected ? Math.round((collected / expected) * 100) : 0;
+  const all = (leases ?? []) as LeaseBalance[];
+  const byLease = new Map(all.map((l) => [l.lease_id, l]));
+  const active = all.filter((l) => l.status === "active");
+  const arrears = active.filter((l) => Number(l.arrears) > 0).sort((a, b) => Number(b.arrears) - Number(a.arrears));
+  const totalArrears = arrears.reduce((n, l) => n + Number(l.arrears), 0);
+
+  if (!unitCount) {
+    return (
+      <div className="card empty">
+        <p style={{ fontWeight: 650, color: "var(--ink)", fontSize: 15 }}>Welcome to NyumbaPay</p>
+        <p style={{ margin: "6px 0 14px" }}>Add a property and its units to start collecting rent.</p>
+        <Link className="btn btn-p" href="/units">Add your first property</Link>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="sect">Collected · {periodLabel(period)}</div>
+      <div className="card">
+        <div className="big">{ksh(collected)}</div>
+        <div className="sub">of {ksh(expected)} invoiced · {active.length} of {unitCount} units occupied</div>
+        <div className="bar"><i style={{ width: `${Math.min(100, pct)}%` }} /></div>
+        <div className="sub right" style={{ marginTop: 5 }}>{pct}%</div>
+        {expected === 0 && active.length > 0 && (
+          <div className="acct warn">No invoices for this month yet. <Link href="/invoices"><b>Raise them now →</b></Link></div>
+        )}
+      </div>
+
+      <div className="sect">Arrears <span className="r">{arrears.length ? ksh(totalArrears) : ""}</span></div>
+      {arrears.length ? arrears.map((l) => (
+        <Link key={l.lease_id} className="card" href={`/units/${l.unit_id}`}>
+          <div className="row">
+            <div><div className="t">{l.tenant_name}</div><div className="s">{l.unit_label} · {l.property_name}</div></div>
+            <div className="right"><div className="amt" style={{ color: "var(--red)" }}>{ksh(l.arrears)}</div></div>
+          </div>
+        </Link>
+      )) : <div className="card empty">Everyone is up to date.</div>}
+
+      <div className="sect">Recent payments <Link className="r" href="/payments">All</Link></div>
+      {(pays as Payment[] | null)?.length ? (pays as Payment[]).map((p) => {
+        const l = p.lease_id ? byLease.get(p.lease_id) : undefined;
+        return (
+          <Link key={p.id} className="card" href={l ? `/units/${l.unit_id}` : "/payments"}>
+            <div className="row">
+              <div>
+                <div className="t">{l?.tenant_name ?? p.payer_name ?? "Unknown payer"}</div>
+                <div className="s">{l ? l.unit_label : "Needs assigning"} · {when(p.received_at)}{p.receipt_no ? ` · ${p.receipt_no}` : ""}</div>
+              </div>
+              <div className="amt" style={{ color: p.status === "unmatched" ? "var(--amber)" : "var(--green)" }}>{ksh(p.amount)}</div>
+            </div>
+          </Link>
+        );
+      }) : <div className="card empty">No payments yet.</div>}
+    </>
+  );
+}

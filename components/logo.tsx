@@ -1,0 +1,7 @@
+export function Logo() {
+  return (
+    <div className="logo" aria-hidden>
+      <svg viewBox="0 0 64 64"><path d="M14 34 32 18l18 16v14a2 2 0 0 1-2 2H36V38h-8v12H16a2 2 0 0 1-2-2z" /></svg>
+    </div>
+  );
+}
