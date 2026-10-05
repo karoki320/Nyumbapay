@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC = ["/login", "/auth", "/pay", "/api/hooks", "/api/cron", "/blog", "/sitemap.xml", "/robots.txt", "/opengraph-image"];
+const PUBLIC = ["/login", "/invite", "/auth", "/pay", "/api/hooks", "/api/cron", "/blog", "/sitemap.xml", "/robots.txt", "/opengraph-image"];
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });

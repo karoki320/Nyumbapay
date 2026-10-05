@@ -1,0 +1,50 @@
+.ad{min-height:100dvh;display:grid;grid-template-columns:248px 1fr;background:#f6f7f9}
+.ad-side{background:#0b2a1b;color:#cfe6d8;padding:22px 16px;position:sticky;top:0;height:100dvh;display:flex;flex-direction:column;gap:4px}
+.ad-brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:800;font-size:17px;margin:0 6px 22px}
+.ad-brand i{width:34px;height:34px;border-radius:9px;background:#fff;display:grid;place-items:center}
+.ad-brand small{display:block;font-size:11px;font-weight:700;color:#8fbfa2;letter-spacing:.08em;text-transform:uppercase}
+.ad-side a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:14px;font-weight:600;color:#cfe6d8}
+.ad-side a:hover{background:rgba(255,255,255,.06)}
+.ad-side a.on{background:#fff;color:#0b2a1b}
+.ad-side .sp{flex:1}
+.ad-side .me{font-size:12px;color:#8fbfa2;padding:10px 12px;border-top:1px solid rgba(255,255,255,.08)}
+.ad-main{padding:28px 34px 60px;max-width:1240px;width:100%}
+.ad-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.ad-h h1{font-size:28px;font-weight:800;letter-spacing:-.02em}
+.ad-h p{color:var(--muted);font-size:14px;margin-top:2px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.kpi .k{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.kpi .v{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .d{font-size:12.5px;color:var(--muted);margin-top:2px}
+.kpi.warn{border-color:#fec84b;background:#fffaeb}.kpi.warn .v{color:var(--amber)}
+.kpi.good .v{color:var(--brand)}
+.cols{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;align-items:start}
+.panel2{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.panel2 h2{font-size:15px;font-weight:750;padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.panel2 h2 a{font-size:13px;color:var(--brand);font-weight:650}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:10px 14px;border-bottom:1px solid var(--line);background:#fafbfc}
+.tbl td{padding:12px 14px;border-bottom:1px solid #f0f1f3;vertical-align:top}
+.tbl tr:last-child td{border-bottom:0}
+.tbl tr.link:hover td{background:#f8faf9;cursor:pointer}
+.tbl .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl .sub{font-size:12px}
+.feed{list-style:none;margin:0;padding:0}
+.feed li{display:flex;gap:12px;padding:12px 18px;border-bottom:1px solid #f0f1f3;font-size:13.5px}
+.feed li:last-child{border-bottom:0}
+.feed .dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--brand);margin-top:7px}
+.feed .dot.adm{background:#139cfd}
+.feed .w{color:var(--muted);font-size:12px;margin-top:2px}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px}
+.tag.ok{background:var(--green-bg);color:var(--green)}.tag.wait{background:var(--amber-bg);color:var(--amber)}.tag.none{background:#f2f4f7;color:var(--muted)}
+.tag.adm{background:#e6f4ff;color:#0b6bb5}
+.search{display:flex;gap:8px}
+.search input{border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:280px;background:#fff}
+.ad .btn{width:auto;display:inline-block;padding:10px 16px}
+.ad form.inline{display:inline}
+.split{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:1000px){.kpis{grid-template-columns:repeat(2,1fr)}.cols{grid-template-columns:1fr}}
+@media(max-width:760px){.ad{grid-template-columns:1fr}.ad-side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;padding:12px}
+  .ad-brand{margin:0 10px 0 0}.ad-side .sp,.ad-side .me{display:none}.ad-main{padding:18px 14px 50px}.split{grid-template-columns:1fr}
+  .search input{min-width:0;flex:1}.tbl .hide-m{display:none}}

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { Logo } from "@/components/logo";
 import { Submit } from "@/components/submit";
 import { createClient } from "@/lib/supabase/server";
+import { getIsAdmin } from "@/lib/context";
 import { createOrg } from "./actions";
 
 export const metadata = { title: "Set up" };
@@ -12,6 +13,7 @@ export default async function Onboarding() {
   if (!user) redirect("/login");
   const { count } = await supabase.from("memberships").select("*", { count: "exact", head: true }).eq("user_id", user.id);
   if (count) redirect("/dashboard");
+  if (await getIsAdmin()) redirect("/admin");
 
   return (
     <div className="auth">

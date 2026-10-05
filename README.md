@@ -83,3 +83,18 @@ account prefix starts the account number (for a shared platform paybill). Raw ca
 Money tables are read-only to the app; all writes go through SQL functions (`record_cash_payment`,
 `assign_payment`, `reverse_payment`, `void_invoice`, `generate_invoices`, `ingest_mpesa_c2b`) so balances can't drift.
 "# Nyumbapay" 
+
+## Co-owners
+
+Owners invite a co-owner from **Settings → Co-owners** by email. The invite (email via Resend, plus a copy/WhatsApp link)
+only works for that email address, expires after 14 days and can be used once. Co-owners have full, equal owner rights;
+an account can never remove its last owner. People in several businesses switch between them in Settings.
+
+## Super admin
+
+Admins are listed in the `platform_admins` table (by confirmed email; `biziirise@gmail.com` is seeded).
+To add another: `insert into platform_admins (email) values ('someone@example.com');`
+
+`/admin` shows platform totals, every landlord account, and a live activity feed. From a landlord's page an admin can
+verify their paybill, or **Open account & manage** to work inside it with full rights — a blue banner shows this, and every
+action is logged under the admin's email. Admins can also create an account for a landlord and invite them as its owner.
