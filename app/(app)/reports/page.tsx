@@ -1,11 +1,12 @@
 import Link from "next/link";
+import { Icon, type IconName } from "@/components/icon";
 import { getContext } from "@/lib/context";
 import { ksh, periodLabel, periodOf } from "@/lib/money";
 import { arrearsRows, loadReport, REPORTS, totals, type ReportKind } from "@/lib/reports";
 
 export const metadata = { title: "Reports" };
 
-const ICON: Record<ReportKind, string> = { summary: "🏠", payments: "✅", arrears: "⚠️" };
+const ICON: Record<ReportKind, IconName> = { summary: "house", payments: "check", arrears: "alert" };
 
 export default async function Reports() {
   const { supabase, org } = await getContext();
@@ -16,7 +17,7 @@ export default async function Reports() {
   const stat: Record<ReportKind, string> = {
     summary: `${t.units} houses · ${t.occupied} occupied · ${t.vacant} vacant`,
     payments: `${t.count("paid")} paid · ${t.count("partial")} partly · ${t.count("unpaid")} not paid`,
-    arrears: owing.length ? `${owing.length} house${owing.length === 1 ? "" : "s"} owe ${ksh(t.arrears)}` : "Nobody owes rent 🎉",
+    arrears: owing.length ? `${owing.length} house${owing.length === 1 ? "" : "s"} owe ${ksh(t.arrears)}` : "Nobody owes rent",
   };
   return (
     <>
@@ -25,7 +26,7 @@ export default async function Reports() {
         <Link key={k} href={`/reports/${k}`} className="card">
           <div className="row" style={{ alignItems: "center" }}>
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-              <span style={{ fontSize: 26 }} aria-hidden>{ICON[k]}</span>
+              <span style={{ width: 42, height: 42, borderRadius: 11, background: k === "arrears" ? "var(--red-bg)" : "var(--brand-l)", color: k === "arrears" ? "var(--red)" : "var(--brand)", display: "grid", placeItems: "center", flex: "none" }}><Icon name={ICON[k]} size={22} /></span>
               <div><div className="t">{REPORTS[k].title}</div><div className="s">{stat[k]}</div></div>
             </div>
             <span style={{ color: "var(--brand)", fontWeight: 700 }}>›</span>

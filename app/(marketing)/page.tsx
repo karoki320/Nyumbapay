@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Icon } from "@/components/icon";
 import { fmtDate, POSTS } from "@/lib/blog";
 import { SITE } from "@/lib/site";
 
@@ -72,7 +73,7 @@ export default function Home() {
           <div style={{ position: "relative", justifySelf: "center" }} aria-hidden>
             <div className="mk-phone">
               <div className="mk-screen">
-                <div className="mk-toast"><b>✅ KSh 25,000 from Fatuma Abdi</b><span>Matched by account number → B3. Receipt KAR-000049 issued.</span></div>
+                <div className="mk-toast"><b><Icon name="check" size={15} style={{ color: "#43b02a", marginRight: 6 }} />KSh 25,000 from Fatuma Abdi</b><span>Matched by account number → B3. Receipt KAR-000049 issued.</span></div>
                 <div className="mk-scr-hd"><small>Karoki Properties</small><b>NyumbaPay</b></div>
                 <div className="mk-scr-body">
                   <div className="mk-lbl">Collected · September</div>
@@ -91,8 +92,8 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="mk-float mk-f1"><i>💬</i><div><b>Reminder sent</b><br /><span style={{ color: "#6b7280" }}>in Kiswahili, via WhatsApp</span></div></div>
-            <div className="mk-float mk-f2"><i>🔁</i><div><b>Duplicate ignored</b><br /><span style={{ color: "#6b7280" }}>no double counting</span></div></div>
+            <div className="mk-float mk-f1"><i><Icon name="message" size={16} style={{ color: "#0f5132" }} /></i><div><b>Reminder sent</b><br /><span style={{ color: "#6b7280" }}>in Kiswahili, via WhatsApp</span></div></div>
+            <div className="mk-float mk-f2"><i><Icon name="repeat" size={16} style={{ color: "#8a6400" }} /></i><div><b>Duplicate ignored</b><br /><span style={{ color: "#6b7280" }}>no double counting</span></div></div>
           </div>
         </div>
       </section>

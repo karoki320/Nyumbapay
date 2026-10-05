@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Submit } from "@/components/submit";
+import { Icon } from "@/components/icon";
 import { canManage, getContext } from "@/lib/context";
 import { reminderText } from "@/lib/messages";
 import { ksh, msisdn, ordinal, periodLabel, when } from "@/lib/money";
@@ -60,9 +61,9 @@ export default async function UnitPage({ params }: { params: Promise<{ id: strin
           </div>
 
           <div className="sect">Actions</div>
-          {wa && <a className="btn btn-p" href={wa} target="_blank" rel="noopener noreferrer">💬 Send reminder on WhatsApp</a>}
+          {wa && <a className="btn btn-p" href={wa} target="_blank" rel="noopener noreferrer"><Icon name="message" style={{ marginRight: 8 }} />Send reminder on WhatsApp</a>}
           <details className="card" style={{ marginTop: 8 }}>
-            <summary>💵 Record a cash or bank payment</summary>
+            <summary><span><Icon name="cash" style={{ marginRight: 8, color: "var(--brand)" }} />Record a cash or bank payment</span></summary>
             <form action={recordPayment}>
               <input type="hidden" name="unit_id" value={unit.id} />
               <input type="hidden" name="lease_id" value={lease.lease_id} />
@@ -82,7 +83,7 @@ export default async function UnitPage({ params }: { params: Promise<{ id: strin
             </form>
           </details>
           <details className="card">
-            <summary>🔗 Tenant pay link</summary>
+            <summary><span><Icon name="link" style={{ marginRight: 8, color: "var(--brand)" }} />Tenant pay link</span></summary>
             <p className="sub">Share this link — no app or login needed. It shows the balance and how to pay.</p>
             <input className="field" readOnly value={payLink} />
             <Link className="btn btn-g" style={{ marginTop: 8 }} href={`/pay/${lease.pay_token}`} target="_blank">Open pay page</Link>

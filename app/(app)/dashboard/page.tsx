@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Icon } from "@/components/icon";
 import { getContext } from "@/lib/context";
 import { ksh, periodLabel, periodOf, when } from "@/lib/money";
 import type { LeaseBalance, Payment } from "@/lib/types";
@@ -50,7 +51,7 @@ export default async function Dashboard() {
       </div>
 
       <Link href="/reports" className="card" style={{ marginTop: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span><b>📊 Reports</b> <span className="s">· all houses, paid vs not paid, arrears</span></span>
+        <span><b><Icon name="chart" style={{ color: "var(--brand)", marginRight: 6 }} />Reports</b> <span className="s">· all houses, paid vs not paid, arrears</span></span>
         <span style={{ color: "var(--brand)", fontWeight: 700 }}>›</span>
       </Link>
 

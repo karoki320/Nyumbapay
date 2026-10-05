@@ -99,7 +99,7 @@ TEMPLATES = {
     "confirm-signup": dict(
         subject="Welcome to NyumbaPay — please confirm your email",
         preheader="One quick click and your account is ready.",
-        title="Karibu to NyumbaPay 👋",
+        title="Karibu to NyumbaPay",
         body=p("Thank you for choosing NyumbaPay. We’re glad to have you on board.")
         + p("Please confirm your email address so we can finish setting up your account — it only takes a second.")
         + button("Confirm my email")
@@ -116,7 +116,7 @@ TEMPLATES = {
         body=p("Hello,")
         + p("You asked to sign in to NyumbaPay. Tap the button below and you’ll be taken straight to your dashboard.")
         + button("Sign in to NyumbaPay")
-        + note("🔒 For your security, this link works once and expires shortly. Never share it with anyone — "
+        + note("For your security, this link works once and expires shortly. Never share it with anyone — "
                "NyumbaPay staff will never ask you for it.")
         + fallback_link(),
         footer="Someone entered {{ .Email }} on the NyumbaPay sign-in page. " + IGNORE,
@@ -129,7 +129,7 @@ TEMPLATES = {
         + p("We received a request to reset the password for your NyumbaPay account "
             "(<strong>{{ .Email }}</strong>). Use the button below to continue.")
         + button("Reset my password")
-        + note("🔒 This link can only be used once and expires shortly. If you didn’t ask for this, "
+        + note("This link can only be used once and expires shortly. If you didn’t ask for this, "
                "your password is still safe and you don’t need to do anything.")
         + fallback_link(),
         footer=IGNORE,
@@ -171,7 +171,7 @@ TEMPLATES = {
     {{{{ .Token }}}}
   </td></tr>
 </table>"""
-        + note("🔒 This code expires shortly. NyumbaPay staff will never ask you for it."),
+        + note("This code expires shortly. NyumbaPay staff will never ask you for it."),
         footer=IGNORE,
     ),
 }

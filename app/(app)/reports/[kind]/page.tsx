@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PrintButton } from "@/components/print-button";
+import { Icon } from "@/components/icon";
 import { getContext } from "@/lib/context";
 import { reminderText } from "@/lib/messages";
 import { ksh, msisdn, periodLabel, periodOf, shiftPeriod } from "@/lib/money";
@@ -45,7 +46,7 @@ export default async function Report({ params, searchParams }: {
         </div>
       )}
       <div className="noprint" style={{ display: "flex", gap: 8, margin: "10px 0 12px", flexWrap: "wrap" }}>
-        <a className="btn btn-g btn-sm" href={csv}>⬇ Download for Excel</a>
+        <a className="btn btn-g btn-sm" href={csv}><Icon name="download" size={15} style={{ marginRight: 6 }} />Download for Excel</a>
         <PrintButton />
       </div>
 
@@ -128,7 +129,7 @@ function Payments({ rows, t }: { rows: ReportRow[]; t: ReturnType<typeof totals>
 function Arrears({ rows, org }: { rows: ReportRow[]; org: { account_prefix: string; paybill: string | null } }) {
   const owing = arrearsRows(rows);
   const total = owing.reduce((n, r) => n + r.arrears, 0);
-  if (!owing.length) return <div className="card empty">🎉 No house has rent arrears.</div>;
+  if (!owing.length) return <div className="card empty"><Icon name="check" size={22} style={{ color: "var(--green)", display: "block", margin: "0 auto 6px" }} />No house has rent arrears.</div>;
   return (
     <>
       <Stats items={[["Houses owing", `${owing.length}`, "var(--red)"], ["Total arrears", ksh(total), "var(--red)"],
