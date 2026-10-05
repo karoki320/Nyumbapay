@@ -98,3 +98,34 @@ To add another: `insert into platform_admins (email) values ('someone@example.co
 `/admin` shows platform totals, every landlord account, and a live activity feed. From a landlord's page an admin can
 verify their paybill, or **Open account & manage** to work inside it with full rights — a blue banner shows this, and every
 action is logged under the admin's email. Admins can also create an account for a landlord and invite them as its owner.
+
+## Reports
+
+**Reports** (link on Home) has three reports, each downloadable for Excel (CSV) and printable / savable as PDF:
+- **All houses summary** — every house, tenant, rent, paid this month, total arrears, status (pick a month)
+- **Paid vs not paid** — houses grouped into paid, partly paid, not paid, vacant (pick a month)
+- **Rent arrears** — every house that owes, biggest first, months owing and since when, with a WhatsApp *Remind* button
+
+## Automatic rent reminders
+
+Each business chooses a reminder day in **Settings → Rent reminders** (default: the 5th; can be switched off).
+At 09:00 Nairobi time on that day (`/api/cron/reminders`, daily cron in `vercel.json`) every tenant with a balance and a
+phone number gets one reminder — WhatsApp first, SMS as fallback. Tenants who have paid are skipped; nobody gets more than
+one successful reminder a day. Owners can also press **Send reminders now**. Every attempt is listed under *Recent reminders*.
+
+Sending is switched on by environment variables (nothing is sent until at least one channel is set):
+
+| Variable | Purpose |
+|---|---|
+| `WHATSAPP_TOKEN` | WhatsApp Cloud API permanent access token |
+| `WHATSAPP_PHONE_NUMBER_ID` | Sender phone number ID from Meta |
+| `WHATSAPP_REMINDER_TEMPLATE` | Approved template name, e.g. `rent_reminder` |
+| `WHATSAPP_TEMPLATE_LANGS` | Languages the template is approved in, e.g. `en,sw` |
+| `WHATSAPP_API_VERSION` | Optional, default `v23.0` |
+| `AT_USERNAME`, `AT_API_KEY`, `AT_SENDER_ID` | Africa's Talking SMS (fallback); `AT_SENDER_ID` optional |
+
+WhatsApp template (category *Utility*), six variables — submit an English and a Kiswahili version:
+
+> **en:** Hi {{1}}, this is a reminder that rent for {{2}} is due. Balance: {{3}}. Pay via M-Pesa Paybill {{4}}, account {{5}}. Details: {{6}}
+>
+> **sw:** Habari {{1}}, hii ni kumbusho kuwa kodi ya {{2}} inadaiwa. Salio: {{3}}. Lipa kupitia M-Pesa Paybill {{4}}, akaunti {{5}}. Maelezo: {{6}}

@@ -49,6 +49,11 @@ export default async function Dashboard() {
         )}
       </div>
 
+      <Link href="/reports" className="card" style={{ marginTop: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span><b>📊 Reports</b> <span className="s">· all houses, paid vs not paid, arrears</span></span>
+        <span style={{ color: "var(--brand)", fontWeight: 700 }}>›</span>
+      </Link>
+
       <div className="sect">Arrears <span className="r">{arrears.length ? ksh(totalArrears) : ""}</span></div>
       {arrears.length ? arrears.map((l) => (
         <Link key={l.lease_id} className="card" href={`/units/${l.unit_id}`}>

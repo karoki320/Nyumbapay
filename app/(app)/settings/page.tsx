@@ -2,7 +2,9 @@ import { CopyButton } from "@/components/copy-button";
 import { Submit } from "@/components/submit";
 import { canManage, getContext } from "@/lib/context";
 import { SITE } from "@/lib/site";
-import { cancelInvite, inviteCoOwner, removeMember, saveSettings, switchOrg } from "./actions";
+import { anyChannel } from "@/lib/notify";
+import { ksh, ordinal, when } from "@/lib/money";
+import { cancelInvite, inviteCoOwner, removeMember, saveReminders, saveSettings, sendRemindersNow, switchOrg } from "./actions";
 
 export const metadata = { title: "Settings" };
 
@@ -18,6 +20,14 @@ export default async function Settings() {
     supabase.from("org_invites").select("id, email, token, expires_at").eq("org_id", org.id)
       .is("accepted_at", null).is("revoked_at", null).gt("expires_at", new Date().toISOString()).order("created_at"),
   ]);
+  const [{ data: rem }, { data: lb }] = await Promise.all([
+    supabase.from("reminders").select("id, lease_id, kind, channel, amount, status, created_at").eq("org_id", org.id)
+      .order("created_at", { ascending: false }).limit(15),
+    supabase.from("lease_balances").select("lease_id, unit_label, tenant_name").eq("org_id", org.id),
+  ]);
+  const recent = (rem ?? []) as { id: string; lease_id: string; kind: string; channel: string; amount: number; status: string; created_at: string }[];
+  const byLease = new Map(((lb ?? []) as { lease_id: string; unit_label: string; tenant_name: string }[]).map((l) => [l.lease_id, l]));
+  const channels = anyChannel();
   const members = (m ?? []) as Member[];
   const invites = (inv ?? []) as Invite[];
   const manage = canManage(role);
@@ -50,6 +60,46 @@ export default async function Settings() {
         <div className="kv"><span>Example account</span><b>{org.account_prefix}-A1</b></div>
         <div className="kv"><span>Your role</span><b style={{ textTransform: "capitalize" }}>{acting ? "Super admin" : role}</b></div>
       </div>
+
+      <div className="sect" id="reminders">Rent reminders</div>
+      <form className="card" action={saveReminders}>
+        <fieldset disabled={!manage} style={{ border: 0, padding: 0, margin: 0 }}>
+          <label style={{ display: "flex", gap: 10, alignItems: "center", fontWeight: 650, fontSize: 14 }}>
+            <input type="checkbox" name="reminders_enabled" defaultChecked={org.reminders_enabled} style={{ width: 20, height: 20, accentColor: "var(--brand)" }} />
+            Remind tenants who haven’t paid automatically
+          </label>
+          <label className="l">Send on day
+            <select className="field" name="reminder_day" defaultValue={org.reminder_day}>
+              {Array.from({ length: 28 }, (_, i) => i + 1).map((d) => <option key={d} value={d}>{ordinal(d)} of every month</option>)}
+            </select>
+          </label>
+          <p className="sub" style={{ marginTop: 8 }}>
+            At 9:00 am on that day, every tenant with a balance gets a WhatsApp message (or SMS) in their language with the amount, paybill,
+            account number and pay link. Tenants who have paid are skipped.
+          </p>
+          {!channels && <div className="acct warn">Automatic sending is being switched on by NyumbaPay. Until then, use the <b>Remind</b> buttons in the <a href="/reports/arrears" style={{ textDecoration: "underline" }}>arrears report</a>.</div>}
+          {manage && <div style={{ marginTop: 12 }}><Submit>Save reminder settings</Submit></div>}
+        </fieldset>
+      </form>
+      {manage && channels && (
+        <form action={sendRemindersNow} style={{ marginTop: 8 }}>
+          <Submit className="btn btn-g" confirm="Send a reminder now to every tenant who still owes?">Send reminders now</Submit>
+        </form>
+      )}
+      {recent.length > 0 && (
+        <details className="card">
+          <summary>Recent reminders ({recent.length})</summary>
+          {recent.map((r) => {
+            const l = byLease.get(r.lease_id);
+            return (
+              <div key={r.id} className="kv">
+                <span>{l ? `${l.unit_label} · ${l.tenant_name}` : "—"}<br /><small>{when(r.created_at)} · {r.kind === "auto" ? "automatic" : "sent now"} · {r.channel === "none" ? "not sent" : r.channel === "sms" ? "SMS" : "WhatsApp"}</small></span>
+                <b style={{ color: r.status === "sent" ? "var(--green)" : "var(--red)" }}>{ksh(r.amount)}<br /><small>{r.status}</small></b>
+              </div>
+            );
+          })}
+        </details>
+      )}
 
       <div className="sect" id="co-owners">Co-owners <span className="r">{members.length}</span></div>
       {members.map((x) => (

@@ -7,12 +7,13 @@ import { createClient } from "@/lib/supabase/server";
 export type Org = {
   id: string; name: string; account_prefix: string; paybill: string | null;
   paybill_verified: boolean; rent_due_day: number;
+  reminders_enabled: boolean; reminder_day: number;
 };
 export type Role = "owner" | "admin" | "staff";
 
 export const ORG_COOKIE = "np_org";             // which business a multi-business user is viewing
 export const ADMIN_ORG_COOKIE = "np_admin_org"; // which business a super admin is acting inside
-const ORG_COLS = "id, name, account_prefix, paybill, paybill_verified, rent_due_day";
+const ORG_COLS = "id, name, account_prefix, paybill, paybill_verified, rent_due_day, reminders_enabled, reminder_day";
 
 /** Is the signed-in user a NyumbaPay super admin? */
 export const getIsAdmin = cache(async () => {

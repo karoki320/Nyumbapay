@@ -45,7 +45,8 @@ export default async function Invoices({ searchParams }: { searchParams: Promise
             <Submit className="btn btn-g">Raise missing invoices for {periodLabel(period)}</Submit>
           </form>
         )}
-        <p className="sub" style={{ marginTop: 8 }}>Invoices are raised automatically each month for every active lease.</p>
+        <p className="sub" style={{ marginTop: 8 }}>Invoices are raised automatically each month for every active lease.
+          {" "}<Link href={`/reports/payments?period=${period.slice(0, 7)}`} style={{ color: "var(--brand)", fontWeight: 650 }}>See the paid vs not paid report →</Link></p>
       </div>
 
       <div className="sect">{live.length} invoices</div>
