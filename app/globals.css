@@ -137,3 +137,10 @@ details.card[open] summary{margin-bottom:6px}
   .rtable .mo{display:block;color:var(--red)}
   .rstats{grid-template-columns:repeat(3,1fr)}
 }
+
+/* Quick payment tick on Home */
+.qp-tick{flex:none;width:38px;height:38px;border-radius:99px;display:grid;place-items:center;border:1.5px solid #abefc6;background:var(--green-bg);color:var(--green);cursor:pointer;margin-left:2px}
+.qp-tick:hover{background:#d1fadf}
+.qp-tick.on{background:var(--green);border-color:var(--green);color:#fff}
+.qp-form{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.qp-form .btn+.btn{margin-top:0}

@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/icon";
+import { QuickPay } from "@/components/quick-pay";
+import { quickPayment } from "./actions";
 import { getContext } from "@/lib/context";
 import { ksh, periodLabel, periodOf, when } from "@/lib/money";
 import type { LeaseBalance, Payment } from "@/lib/types";
@@ -24,8 +26,11 @@ export default async function Dashboard() {
   const all = (leases ?? []) as LeaseBalance[];
   const byLease = new Map(all.map((l) => [l.lease_id, l]));
   const active = all.filter((l) => l.status === "active");
-  const arrears = active.filter((l) => Number(l.arrears) > 0).sort((a, b) => Number(b.arrears) - Number(a.arrears));
+  const arrears = active.filter((l) => Number(l.arrears) > 0);
   const totalArrears = arrears.reduce((n, l) => n + Number(l.arrears), 0);
+  // Owing first (largest first), then everyone who is paid up, by house.
+  const tenants = [...active].sort((a, b) => Number(b.arrears) - Number(a.arrears)
+    || a.property_name.localeCompare(b.property_name) || a.unit_label.localeCompare(b.unit_label, undefined, { numeric: true }));
 
   if (!unitCount) {
     return (
@@ -55,15 +60,13 @@ export default async function Dashboard() {
         <span style={{ color: "var(--brand)", fontWeight: 700 }}>›</span>
       </Link>
 
-      <div className="sect">Arrears <span className="r">{arrears.length ? ksh(totalArrears) : ""}</span></div>
-      {arrears.length ? arrears.map((l) => (
-        <Link key={l.lease_id} className="card" href={`/units/${l.unit_id}`}>
-          <div className="row">
-            <div><div className="t">{l.tenant_name}</div><div className="s">{l.unit_label} · {l.property_name}</div></div>
-            <div className="right"><div className="amt" style={{ color: "var(--red)" }}>{ksh(l.arrears)}</div></div>
-          </div>
-        </Link>
-      )) : <div className="card empty">Everyone is up to date.</div>}
+      <div className="sect">Tenants <span className="r">{arrears.length ? `${arrears.length} owe ${ksh(totalArrears)}` : "all paid"}</span></div>
+      {tenants.length ? tenants.map((l) => (
+        <QuickPay key={l.lease_id} action={quickPayment} leaseId={l.lease_id} unitId={l.unit_id}
+          tenant={l.tenant_name} unit={l.unit_label} property={l.property_name}
+          arrears={Number(l.arrears)} credit={Number(l.credit)} rent={Number(l.rent)}
+          amountLabel={ksh(Number(l.arrears) > 0 ? l.arrears : l.credit)} />
+      )) : <div className="card empty">No tenants yet. <Link href="/units"><b>Add one</b></Link></div>}
 
       <div className="sect">Recent payments <Link className="r" href="/payments">All</Link></div>
       {(pays as Payment[] | null)?.length ? (pays as Payment[]).map((p) => {
