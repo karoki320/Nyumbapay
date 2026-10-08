@@ -35,18 +35,10 @@ export function QuickPay({ leaseId, unitId, tenant, unit, property, arrears, cre
         <form action={action} className="qp-form">
           <input type="hidden" name="lease_id" value={leaseId} />
           <input type="hidden" name="tenant" value={tenant} />
-          <div className="grid2">
-            <label className="l">Amount received (KSh)
-              <input className="field" name="amount" inputMode="decimal" required autoFocus defaultValue={suggested || ""} />
-            </label>
-            <label className="l">Method
-              <select className="field" name="source"><option value="cash">Cash</option><option value="bank">Bank transfer</option></select>
-            </label>
-          </div>
-          <label className="l">Reference (optional)<input className="field" name="ref" placeholder="Receipt book or bank ref" maxLength={60} /></label>
-          <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-            <Submit className="btn btn-p">Record payment</Submit>
-            <button type="button" className="btn btn-g" style={{ marginTop: 0 }} onClick={() => setOpen(false)}>Cancel</button>
+          <div className="qp-line">
+            <input className="field" name="amount" inputMode="decimal" required autoFocus aria-label="Amount received (KSh)"
+              placeholder="Amount (KSh)" defaultValue={suggested || ""} />
+            <Submit className="btn btn-p">Done</Submit>
           </div>
         </form>
       )}
